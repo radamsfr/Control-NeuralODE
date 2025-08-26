@@ -80,13 +80,14 @@ using Serialization: serialize, deserialize
 using JSON3: JSON3
 
 using LazyGrids: ndgrid
-using PyPlot: plt, matplotlib, ColorMap, plot3D, scatter3D
+using PyPlot: plot, plt, matplotlib, ColorMap, plot3D, scatter3D
+using PyPlot
 using LaTeXStrings: @L_str
 
 import CommonSolve: solve
 
 # scripts as functions
-export batch_reactor, bioreactor, semibatch_reactor, van_der_pol
+export batch_reactor, bioreactor, semibatch_reactor, van_der_pol, test
 
 # NOTE : mark the variables that work as constants (avoid constants for Revise.jl)
 @show const INTEGRATOR = Tsit5()
@@ -121,22 +122,25 @@ include("optimizers.jl")
 include("training.jl")
 include("plotting.jl")
 include("loading.jl")
+include("test.jl")
 
 # case studies
-include("systems/batch_reactor.jl")
-include("systems/van_der_pol.jl")
-include("systems/bioreactor.jl")
-include("systems/semibatch_reactor.jl")
+# include("systems/batch_reactor.jl")
+# include("systems/van_der_pol.jl")
+include("systems/triple_integrator.jl")
+# include("systems/bioreactor.jl")
+# include("systems/semibatch_reactor.jl")
 
 # classic collocation
 include("collocation/classic/van_der_pol.jl")
-include("collocation/classic/bioreactor.jl")
-include("collocation/classic/semibatch_reactor.jl")
+# include("collocation/classic/bioreactor.jl")
+# include("collocation/classic/semibatch_reactor.jl")
 
 # training
-include("scripts/batch_reactor.jl")
-include("scripts/van_der_pol.jl")
-include("scripts/bioreactor.jl")
-include("scripts/semibatch_reactor.jl")
+# include("scripts/batch_reactor.jl")
+# include("scripts/van_der_pol.jl")
+include("scripts/triple_integrator.jl")
+# include("scripts/bioreactor.jl")
+# include("scripts/semibatch_reactor.jl")
 
 end # module

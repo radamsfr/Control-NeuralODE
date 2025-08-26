@@ -162,7 +162,7 @@ end
 @kwdef struct ShadeConf
     indicator::Function
     cmap = "gray"
-    transparency = 1
+    transparency = 0.8
 end
 
 @kwdef struct ConstRef
@@ -336,7 +336,7 @@ function phase_portrait(
 
     ax.set(; xlim=xlims .+ (-0.05, 0.05), ylim=ylims .+ (-0.05, 0.05))
     ax.set_xlabel("x")
-    ax.set_ylabel("y")
+    ax.set_ylabel("v")
     !isnothing(title) && ax.set_title(title)
 
     # fig.colorbar(strm.lines)
@@ -350,6 +350,46 @@ function phase_portrait(
 
     plt.tight_layout()
 
+    return fig
+end
+
+function control_input_graph(time, states, control_inputs, title, show_jerk=true, savepath=nothing)
+    # println("time: ", size(time))
+    # println("states: ", size(states))
+    # println("control: ", size(control_inputs))
+
+    fig = plt.figure()
+    ax = fig.add_subplot()
+    # acceleration = cumul_integrate(time, control_inputs)
+    # velocity = cumul_integrate(time, acceleration)
+    # position = cumul_integrate(time, velocity)
+    position = states[1, :]
+    velocity = states[2, :]
+    acceleration = states[3, :]
+
+    ax.plot(time, position, color="blue", label="position")
+    ax.plot(time, velocity, color="orange", label="velocity")
+    ax.plot(time, acceleration, color="green", label="acceleration")
+
+    if (show_jerk)
+        ax.plot(time, control_inputs, color="red", label="jerk")
+    end
+
+    maxes = [maximum(control_inputs), maximum(acceleration), maximum(velocity), maximum(position)]
+    mins = [minimum(control_inputs), minimum(acceleration), minimum(velocity), minimum(position)]
+    ybounds = [minimum(mins), maximum(maxes)]
+
+    ax.set_title("Control Input Graph")
+    ax.set(; xlim=[time[1], time[end]], ylim=ybounds)
+    ax.set_xlabel("time (s)")
+    ax.set_ylabel("state")
+    ax.grid(true)
+    ax.set_title(title)
+    if savepath !== nothing
+        savefig(savepath)
+    end
+    plt.legend()
+    plt.show()
     return fig
 end
 

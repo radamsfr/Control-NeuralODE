@@ -3,7 +3,7 @@ function van_der_pol_collocation(
     tspan;
     num_supports::Integer=10,
     nodes_per_element::Integer=2,
-    constrain_states::Bool=false,
+    constrain_states::Bool=true,
     verbose=false,
 )
     optimizer = optimizer_with_attributes(
