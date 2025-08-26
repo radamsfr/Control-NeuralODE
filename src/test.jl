@@ -3,7 +3,7 @@ function test(dirpath, u0=[2.0, -2.0, -1.0])
     datadir = dirpath
 
     @time begin
-        system = VanDerPol()
+        system = TripleIntegrator()
         controlODE = ControlODE(system, u0)
         
         θ = deserialize(datadir)
