@@ -55,6 +55,15 @@ function run_simulation(
     return solution.t, states, controls
 end
 
+# function safe_serialize_params(path, params)
+#     safe_params = map(x ->
+#         x == Inf   ? "Inf"  :
+#         x == -Inf  ? "-Inf" :
+#         isnan(x)   ? "NaN"  :
+#         x, params)
+#     serialize(path, safe_params)
+# end
+
 # TODO: use DrWatson jl
 function store_simulation(
     filename::Union{Nothing,String},
@@ -69,7 +78,10 @@ function store_simulation(
     end
 
     params_path = joinpath(datadir, filename * "_params.jls")
-    serialize(params_path, params)
+    # store inf as string (deserialized during testing)
+    # safe_serialize_params(params_path, params)
+    safe_params = replace(params, Inf=>"Inf", -Inf=>"-Inf", NaN=>"NaN")
+    serialize(params_path, safe_params)
 
     # weights_path = joinpath(datadir, filename * "_nnweights.csv")
     # CSV.write(weights_path, Tables.table(params), writeheader=false)
