@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import cvxpy as cp
 
 n = 3
-Tf = 5
+Tf = 1.410
 dt = 0.01
 T = int(Tf / dt)
 t = np.linspace(0, Tf, T)
@@ -61,7 +61,7 @@ end_time = time.time()
 
 
 print(f"Achieved a total cost of {cost:.02f}. 🚀")
-print(f"Total time: {end_time - start_time:.02f}")
+print(f"Compute time: {end_time - start_time:.02f}")
 
 def plot_solution(X: cp.Variable, u: cp.Variable):
 
@@ -73,7 +73,7 @@ def plot_solution(X: cp.Variable, u: cp.Variable):
     # plt.xlim(0,5)
     # plt.ylim(-10, 10)
 
-    plt.title("Numerical Solver Optimal Trajectory")
+    plt.title("CVXpy Optimal Trajectory")
     plt.xlabel("time (s)")
     plt.ylabel("state")
     plt.grid(True)
