@@ -149,6 +149,7 @@ function evaluate_barrier(
 )
     objective, state_penalty, control_penalty, regularization = losses(controlODE, θ; α, δ, ρ)
     if isinf(state_penalty)
+        println("state penalty inf")
         return :inf
     end
     state_penalty_size = abs(state_penalty)
@@ -192,16 +193,23 @@ function tune_barrier(
             δ = decrease_by_percentage(δ, δ_percentage_change)
 
         elseif evaluation in [:overtight, :inf]
+            println("delta increase")
+            # δ = min(1f20, increase_by_percentage(δ, δ_percentage_change))
             δ = increase_by_percentage(δ, δ_percentage_change)
+            println("delta: ", δ)
             # @infiltrate counter == max_iters
 
         elseif evaluation == :reasonable
             if previous_evaluation in [:overtight, :inf]
                 if increase_alpha
+                    println("alpha increase")
                     α = increase_by_percentage(α, α_percentage_change)
+                    println("alpha: ", α)
                 end
             else
+                println("delta decrease")
                 δ = decrease_by_percentage(δ, δ_percentage_change)
+                println("delta: ", δ)
             end
             return α, δ
         else
@@ -235,11 +243,11 @@ function constrained_training(
     controlODE,
     θ;
     ρ,
-    α0=1f-3,
+    α0=1f0,
     δ0=1f1,
     max_solver_iterations=10,  # per step
     max_barrier_iterations=100,
-    max_α = 1e3 * α0,
+    max_α = α0,
     min_δ = 1e-2 * δ0,
     max_δ = 1e4 * δ0,
     show_progressbar=false,
