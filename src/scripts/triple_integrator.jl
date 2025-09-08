@@ -2,7 +2,7 @@
 # Solution of a Class of Multistage Dynamic Optimization Problems. 2. Problems with Path Constraints.
 # Industrial & Engineering Chemistry Research, 33(9), 2123–2133. https://doi.org/10.1021/ie00033a015
 
-function triple_integrator(; store_results::Bool=false)
+function triple_integrator(saved_params="", u0=[2.0,-2.0,-1.0], tf=2.0f0; store_results::Bool=false)
     datadir = nothing
     if store_results
         datadir = generate_data_subdir(@__FILE__)
@@ -10,11 +10,22 @@ function triple_integrator(; store_results::Bool=false)
     graph_width = 41
 
     # initial state (original code used u0)
-    u0 = [2.0, -2.0, -1.0]
+    # u0 = [2.0, -2.0, -1.0]
+    println("u0: ", u0)
+    println("tf: ", tf)
     system = TripleIntegrator()
-    controlODE = ControlODE(system, u0)
+    controlODE = ControlODE(system, u0, tf)
 
-    θ = initial_params(controlODE.controller)
+
+    if (saved_params != "")
+        println("restoring saved params")
+        safe_θ = deserialize(saved_params)
+        θ = replace(safe_θ, "Inf"=>Inf, "-Inf"=>-Inf, "NaN"=>NaN)
+    else
+        print("randomized params")
+        θ = initial_params(controlODE.controller)
+        # print("params ", θ)
+    end
 
     # figure 1
     sol_time, states_raw, controls = run_simulation(controlODE, θ)
@@ -79,7 +90,7 @@ function triple_integrator(; store_results::Bool=false)
             c = controlODE.controller(s, params)
 
             objective += s[1]^2 + 0.001*s[2]^2 + 0.001*s[3]^2
-            control_penalty += c[1] * 0
+            # control_penalty += c[1] * 0
         end
         objective *= Δt
         # control_penalty *= Δt
@@ -87,7 +98,7 @@ function triple_integrator(; store_results::Bool=false)
         # goal_state = [0, 0, 0]
         # weight = [10, 10, 10]
         # objective += sum(weight .* abs.(goal_state .- sol[:, end]))
-        return objective + control_penalty
+        return objective
     end
     loss(params) = loss(controlODE, params)
 

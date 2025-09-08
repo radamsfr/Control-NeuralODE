@@ -37,10 +37,10 @@ function (S::TripleIntegrator)(du, u, p, t, controller; input=:state)
     # return [x1_prime, x2_prime]
 end
 
-function ControlODE(system::TripleIntegrator, u0)
+function ControlODE(system::TripleIntegrator, u0, tf)
     # initial conditions and timepoints
     t0 = 0.0f0
-    tf = 5.0f0
+    # tf = 1.41f0
 
     x0, v0, a0 = u0
 
