@@ -3,7 +3,6 @@
 # Industrial & Engineering Chemistry Research, 33(9), 2123–2133. https://doi.org/10.1021/ie00033a015
 
 function triple_integrator(saved_params="", u0=[2.0,-2.0,-1.0], tf=2.0f0; store_results::Bool=false)
-function triple_integrator(saved_params="", u0=[2.0,-2.0,-1.0], tf=2.0f0; store_results::Bool=false)
     datadir = nothing
     if store_results
         datadir = generate_data_subdir(@__FILE__)
@@ -14,11 +13,7 @@ function triple_integrator(saved_params="", u0=[2.0,-2.0,-1.0], tf=2.0f0; store_
     # u0 = [2.0, -2.0, -1.0]
     println("u0: ", u0)
     println("tf: ", tf)
-    # u0 = [2.0, -2.0, -1.0]
-    println("u0: ", u0)
-    println("tf: ", tf)
     system = TripleIntegrator()
-    controlODE = ControlODE(system, u0, tf)
     controlODE = ControlODE(system, u0, tf)
 
 
